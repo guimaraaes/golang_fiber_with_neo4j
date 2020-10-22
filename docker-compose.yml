@@ -1,0 +1,12 @@
+version: "3.1"
+services:
+    web:
+      image: golang:1.14
+      container_name: golang_fiber_with_neo4j
+      volumes: 
+        - .:/golang_fiber_with_neo4j
+      working_dir: /golang_fiber_with_neo4j
+      command:  go mod download
+      command:  go run main.go
+      ports:
+       - "3000:3000"
