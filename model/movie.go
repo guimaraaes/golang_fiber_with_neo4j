@@ -1,7 +1,7 @@
 package model
 
 type Movie struct {
-	title    string `json:"title"`
-	tagline  string `json:"tagline"`
-	released int    `json:"released"`
+	Title    string `json:"title"`
+	Tagline  string `json:"tagline"`
+	Released int64  `json:"released"`
 }

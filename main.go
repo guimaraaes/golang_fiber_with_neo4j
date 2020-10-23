@@ -1,7 +1,6 @@
 package main
 
 import (
-	// "github.com/arsmn/fiber-swagger/v2"
 	"github.com/gofiber/fiber/v2"
 	"github.com/guimaraaes/golang_fiber_with_neo4j/database"
 	_ "github.com/guimaraaes/golang_fiber_with_neo4j/docs"
@@ -24,6 +23,5 @@ func main() {
 	database.ConnectionNeo4j()
 	app := fiber.New()
 	router.Routes(app)
-
 	app.Listen(":3000")
 }

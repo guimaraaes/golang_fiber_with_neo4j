@@ -21,10 +21,10 @@ func Routes(app *fiber.App) {
 
 	//movie
 	app.Get("/movie", handler.GetMovie)
-	app.Get("/movie/:id", handler.GetMovieId)
+	app.Get("/movie/:title/:released", handler.GetMovieId)
 	app.Post("/movie", handler.PostMovie)
-	app.Put("/movie/:id", handler.PutMovie)
-	app.Delete("/movie/:id", handler.DeleteMovie)
+	app.Put("/movie/:title/:released", handler.PutMovie)
+	app.Delete("/movie/:title/:released", handler.DeleteMovie)
 
 	//person
 	app.Get("/person", handler.GetPerson)

@@ -1,6 +1,28 @@
 basePath: /
 definitions:
   model.Movie:
+    properties:
+      released:
+        type: integer
+      tagline:
+        type: string
+      title:
+        type: string
+    type: object
+  model.Person:
+    properties:
+      acted:
+        type: boolean
+      born:
+        type: integer
+      direct:
+        type: boolean
+      name:
+        type: string
+      releaseMovie:
+        type: integer
+      titleMovie:
+        type: string
     type: object
 host: localhost:3000
 info:
@@ -46,12 +68,17 @@ paths:
       summary: Create a movies
       tags:
       - movie
-  /movie/{id}:
+  /movie/{title}/{released}:
     delete:
       parameters:
-      - description: Movie ID
+      - description: Movie name
         in: path
-        name: id
+        name: title
+        required: true
+        type: string
+      - description: Movie released year
+        in: path
+        name: released
         required: true
         type: integer
       produces:
@@ -63,14 +90,41 @@ paths:
           description: Bad Request
         "401":
           description: Unauthorized
-      summary: Delete a movies
+      summary: Delete a movie
+      tags:
+      - movie
+    get:
+      parameters:
+      - description: Movie name
+        in: path
+        name: title
+        required: true
+        type: string
+      - description: Movie released year
+        in: path
+        name: released
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      summary: Get movie by id
       tags:
       - movie
     put:
       parameters:
-      - description: Movie ID
+      - description: Movie name
         in: path
-        name: id
+        name: title
+        required: true
+        type: string
+      - description: Movie released year
+        in: path
+        name: released
         required: true
         type: integer
       - description: Movie model
@@ -89,4 +143,101 @@ paths:
       summary: Edit a movies
       tags:
       - movie
+  /person:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      summary: Show all persons
+      tags:
+      - person
+  /person/:
+    post:
+      parameters:
+      - description: Person ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Person model
+        in: body
+        name: person
+        required: true
+        schema:
+          $ref: '#/definitions/model.Person'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      summary: Create a person
+      tags:
+      - person
+  /person/{id}:
+    delete:
+      parameters:
+      - description: Person ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+      summary: Delete a person
+      tags:
+      - person
+    put:
+      parameters:
+      - description: Person ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Person model
+        in: body
+        name: person
+        required: true
+        schema:
+          $ref: '#/definitions/model.Person'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      summary: Edit a person
+      tags:
+      - person
+  /person/id}:
+    get:
+      parameters:
+      - description: Person ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      summary: Get person by id
+      tags:
+      - person
 swagger: "2.0"

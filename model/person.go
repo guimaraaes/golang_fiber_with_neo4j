@@ -1,9 +1,10 @@
 package model
 
-import "gorm.io/gorm"
-
 type Person struct {
-	gorm.Model
-	name string
-	born int
+	TitleMovie   string `json:"titleMovie"`
+	ReleaseMovie int    `json:"releaseMovie"`
+	Name         string `json:"name"`
+	Born         int    `json:"born"`
+	Acted        bool   `json:"acted"`
+	Direct       bool   `json:"direct"`
 }
