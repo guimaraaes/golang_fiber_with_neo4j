@@ -7,6 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/guimaraaes/golang_fiber_with_neo4j/database"
 	"github.com/guimaraaes/golang_fiber_with_neo4j/model"
+	"github.com/guimaraaes/golang_fiber_with_neo4j/repository"
 	"github.com/neo4j/neo4j-go-driver/neo4j"
 )
 
@@ -18,34 +19,13 @@ import (
 // @Failure 400 "Bad Request"
 // @Router /movie [get]
 func GetMovie(c *fiber.Ctx) error {
-	movies := make([]model.Movie, 10)
-	_, err := database.Neo4jDS.Session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
-		result, err := transaction.Run(
-			"MATCH (m:Movie) RETURN apoc.convert.toJson(m.title) as t, apoc.convert.toJson(m.released) as l LIMIT 10",
-			nil)
-		if err != nil {
-			return nil, err
-		}
-
-		if !result.Next() {
-			return nil, result.Err()
-		}
-
-		i := 0
-		for result.Next() {
-			title, _ := result.Record().Get("t")
-			released, _ := result.Record().Get("l")
-			movies[i].Title = title.(string)
-			r, _ := strconv.ParseInt(released.(string), 10, 64)
-			movies[i].Released = r
-			i = i + 1
-		}
-		return movies, nil
-	})
-	if err != nil {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"status": "not found"})
+	// movies := make([]model.Movie, 10)
+	var movie []model.Movie
+	movie, err := repository.Find()
+	if err != "" {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"status": err})
 	}
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": movies})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": movie})
 }
 
 // GetMovieId godoc
@@ -61,26 +41,10 @@ func GetMovieId(c *fiber.Ctx) error {
 	n := c.Params("title")
 	title, _ := url.QueryUnescape(n)
 	released := string(c.Params("released"))
-	movie := new(model.Movie)
-
-	_, err := database.Neo4jDS.Session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
-		result, err := transaction.Run(
-			"MATCH (m:Movie {title:$title,released:toInteger($released)}) RETURN apoc.convert.toJson(m.title) as t, apoc.convert.toJson(m.tagline) as tg, apoc.convert.toJson(m.released) as l",
-			map[string]interface{}{"title": title, "released": released})
-		if err != nil {
-			return nil, err
-		}
-		if result.Next() {
-			movie.Title = result.Record().GetByIndex(0).(string)
-			movie.Tagline = result.Record().GetByIndex(1).(string)
-			movie.Released, _ = strconv.ParseInt(result.Record().GetByIndex(2).(string), 10, 64)
-
-			return movie, nil
-		}
-		return nil, result.Err()
-	})
-	if err != nil {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"status": "error"})
+	var movie []model.Movie
+	movie, err := repository.Find(title, released)
+	if err != "" {
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": err})
 	}
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": movie})
 }
@@ -95,27 +59,49 @@ func GetMovieId(c *fiber.Ctx) error {
 // @Router /movie/ [post]
 func PostMovie(c *fiber.Ctx) error {
 	movie := new(model.Movie)
+	excep := ""
 	if err := c.BodyParser(&movie); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "error", "message": "Review your input", "data": err})
 	}
 
 	_, err := database.Neo4jDS.Session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
-			"MERGE (m:Movie {title:$mtitle, tagline:$mtagline, released:toInteger($mreleased)}) RETURN apoc.convert.toJson(m.title) as t, apoc.convert.toJson(m.tagline) as tg, apoc.convert.toJson(m.released) as l",
+			"MERGE (m:Movie {title:$mtitle, tagline:$mtagline, released:toInteger($mreleased)}) ON CREATE mExist = 'ok'  RETURN apoc.convert.toJson(mExist) as tExist, apoc.convert.toJson(m.title) as t, apoc.convert.toJson(m.tagline) as tg, apoc.convert.toJson(m.released) as l",
 			map[string]interface{}{"mtitle": movie.Title, "mtagline": movie.Tagline, "mreleased": movie.Released})
 		if err != nil {
 			return nil, err
 		}
-		if result.Next() {
-			movie.Title = result.Record().GetByIndex(0).(string)
-			movie.Tagline = result.Record().GetByIndex(1).(string)
-			movie.Released, _ = strconv.ParseInt(result.Record().GetByIndex(2).(string), 10, 64)
-			return movie, nil
+
+		if result.Record().GetByIndex(0).(string) != "" {
+			excep = "já existe"
+			return nil, nil
 		}
+		if result.Next() {
+			movie.Title = result.Record().GetByIndex(1).(string)
+			movie.Tagline = result.Record().GetByIndex(2).(string)
+			movie.Released, _ = strconv.ParseInt(result.Record().GetByIndex(3).(string), 10, 64)
+			return nil, nil
+		}
+		// MATCH (mExist:Movie {title:$mtitle, released:toInteger($mreleased)})
+		// result, err := transaction.Run(
+		// 	"MERGE (m:Movie {title:$mtitle, tagline:$mtagline, released:toInteger($mreleased)}) RETURN apoc.convert.toJson(m.title) as t, apoc.convert.toJson(m.tagline) as tg, apoc.convert.toJson(m.released) as l",
+		// 	map[string]interface{}{"mtitle": movie.Title, "mtagline": movie.Tagline, "mreleased": movie.Released})
+		// if err != nil {
+		// 	return nil, err
+		// }
+		// if result.Next() {
+		// 	movie.Title = result.Record().GetByIndex(1).(string)
+		// 	movie.Tagline = result.Record().GetByIndex(2).(string)
+		// 	movie.Released, _ = strconv.ParseInt(result.Record().GetByIndex(3).(string), 10, 64)
+		// 	return nill, nil
+		// }
 		return nil, result.Err()
 	})
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"status": "error"})
+	}
+	if excep != "" {
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": excep})
 	}
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": movie})
 }
@@ -135,6 +121,7 @@ func PutMovie(c *fiber.Ctx) error {
 	title, _ := url.QueryUnescape(t)
 	released := string(c.Params("released"))
 	movie := new(model.Movie)
+	excep := ""
 	if err := c.BodyParser(&movie); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "error", "message": "Review your input", "data": err})
 	}
@@ -146,16 +133,22 @@ func PutMovie(c *fiber.Ctx) error {
 		if err != nil {
 			return nil, err
 		}
+
 		if result.Next() {
 			movie.Title = result.Record().GetByIndex(0).(string)
 			movie.Tagline = result.Record().GetByIndex(1).(string)
 			movie.Released, _ = strconv.ParseInt(result.Record().GetByIndex(2).(string), 10, 64)
-			return movie, nil
+			return nil, nil
 		}
+		excep = "não encontrado"
+		// return "não encontrado", nil
 		return nil, result.Err()
 	})
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"status": "error"})
+	}
+	if excep != "" {
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": excep})
 	}
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": movie})
 }
