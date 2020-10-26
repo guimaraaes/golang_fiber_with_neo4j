@@ -7,6 +7,7 @@ definitions:
       tagline:
         type: string
       title:
+        description: gorm.Model
         type: string
     type: object
   model.Person:
@@ -222,12 +223,17 @@ paths:
       summary: Edit a person
       tags:
       - person
-  /person/id}:
+  /person/{name}/{born}:
     get:
       parameters:
-      - description: Person ID
+      - description: name Person
         in: path
-        name: id
+        name: name
+        required: true
+        type: string
+      - description: year person born
+        in: path
+        name: born
         required: true
         type: integer
       produces:

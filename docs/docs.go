@@ -250,34 +250,6 @@ var doc = `{
                 }
             }
         },
-        "/person/id}": {
-            "get": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "person"
-                ],
-                "summary": "Get person by id",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Person ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    }
-                }
-            }
-        },
         "/person/{id}": {
             "put": {
                 "produces": [
@@ -343,6 +315,41 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/person/{name}/{born}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "person"
+                ],
+                "summary": "Get person by id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "name Person",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "year person born",
+                        "name": "born",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -356,6 +363,7 @@ var doc = `{
                     "type": "string"
                 },
                 "title": {
+                    "description": "gorm.Model",
                     "type": "string"
                 }
             }

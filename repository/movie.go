@@ -24,6 +24,7 @@ func Find(info ...string) ([]model.Movie, string) {
 		if err != nil {
 			return nil, err
 		}
+
 		i := 0
 		var m model.Movie
 		for result.Next() {
@@ -33,8 +34,9 @@ func Find(info ...string) ([]model.Movie, string) {
 			movie = append(movie, m)
 			i = i + 1
 		}
-		// return nil, nil
-		excep = "não encontrado"
+		if movie == nil {
+			excep = "não encontrado"
+		}
 		return nil, result.Err()
 	})
 	if err != nil {

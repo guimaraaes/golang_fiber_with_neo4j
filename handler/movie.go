@@ -2,6 +2,7 @@ package handler
 
 import (
 	url "net/url"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/guimaraaes/golang_fiber_with_neo4j/model"
@@ -16,35 +17,57 @@ import (
 // @Failure 400 "Bad Request"
 // @Router /movie [get]
 func GetMovie(c *fiber.Ctx) error {
-	// movies := make([]model.Movie, 10)
 	var movie []model.Movie
-	movie, err := repository.Find()
+	m, err := repository.FindR(movie, nil)
 	if err != "" {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"status": err})
 	}
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": movie})
+	return c.Status(fiber.StatusOK).JSON(m)
 }
+
+// func GetMovie(c *fiber.Ctx) error {
+// 	// movies := make([]model.Movie, 10)
+// 	var movie []model.Movie
+// 	movie, err := repository.Find()
+// 	if err != "" {
+// 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"status": err})
+// 	}
+// 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": movie})
+// }
 
 // GetMovieId godoc
 // @Tags movie
 // @Summary Get movie by id
 // @Produce json
 // @Param title path string true "Movie name"
-// @Param released path int true "Movie released year"
+// @Param released path int64 true "Movie released year"
 // @Success 200 "OK"
 // @Failure 400 "Bad Request"
 // @Router /movie/{title}/{released} [get]
 func GetMovieId(c *fiber.Ctx) error {
 	n := c.Params("title")
 	title, _ := url.QueryUnescape(n)
-	released := string(c.Params("released"))
+	released, _ := strconv.ParseInt(c.Params("released"), 10, 64)
+
 	var movie []model.Movie
-	movie, err := repository.Find(title, released)
+	m, err := repository.FindR(movie, map[string]interface{}{"title": title, "released": released})
 	if err != "" {
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": err})
 	}
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": movie})
+	return c.Status(fiber.StatusOK).JSON(m)
 }
+
+// func GetMovieId(c *fiber.Ctx) error {
+// 	n := c.Params("title")
+// 	title, _ := url.QueryUnescape(n)
+// 	// released := string(c.Params("released"))
+// 	var movie []model.Movie
+// 	movie, err := repository.Find(title, "The Matrix")
+// 	if err != "" {
+// 		return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": err})
+// 	}
+// 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": movie})
+// }
 
 // PostMovie godoc
 // @Tags movie
@@ -56,14 +79,15 @@ func GetMovieId(c *fiber.Ctx) error {
 // @Router /movie/ [post]
 func PostMovie(c *fiber.Ctx) error {
 	movie := new(model.Movie)
+	// var movie model.Movie
 	if err := c.BodyParser(movie); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "error", "message": "Review your input", "data": err})
 	}
-	m, err := repository.Create(movie)
+	m, err := repository.CreateR(movie, map[string]interface{}{"title": "title", "released": "released"})
 	if err != "" {
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": err, "movie": m})
 	}
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": m})
+	return c.Status(fiber.StatusOK).JSON(m)
 }
 
 // PutMovie godoc

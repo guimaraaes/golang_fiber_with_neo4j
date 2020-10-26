@@ -28,7 +28,7 @@ func Routes(app *fiber.App) {
 
 	//person
 	app.Get("/person", handler.GetPerson)
-	app.Get("/person/:id", handler.GetPersonId)
+	app.Get("/person/:name/:born", handler.GetPersonId)
 	app.Post("/person", handler.PostPerson)
 	app.Put("/person/:id", handler.PutPerson)
 	app.Delete("/person/:id", handler.DeletePerson)
