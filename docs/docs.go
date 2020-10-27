@@ -224,13 +224,6 @@ var doc = `{
                 "summary": "Create a person",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "Person ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
                         "description": "Person model",
                         "name": "person",
                         "in": "body",
@@ -350,6 +343,36 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/person_with_relationship": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "person"
+                ],
+                "summary": "Create a person with relationship",
+                "parameters": [
+                    {
+                        "description": "Relationship model",
+                        "name": "relationship",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.PersonRelationship"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -371,22 +394,47 @@ var doc = `{
         "model.Person": {
             "type": "object",
             "properties": {
-                "acted": {
-                    "type": "boolean"
+                "born": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.PersonRelationship": {
+            "type": "object",
+            "properties": {
+                "ano": {
+                    "type": "string"
                 },
                 "born": {
                     "type": "integer"
                 },
-                "direct": {
-                    "type": "boolean"
+                "from": {
+                    "type": "string"
+                },
+                "mes": {
+                    "type": "string"
                 },
                 "name": {
                     "type": "string"
                 },
-                "releaseMovie": {
+                "relationship_type": {
+                    "description": "ACTED    bool   ` + "`" + `json:\"acted_relationship\"` + "`" + `\nDIRECTED bool   ` + "`" + `json:\"direct_relationship\"` + "`" + `",
+                    "type": "string"
+                },
+                "released": {
                     "type": "integer"
                 },
-                "titleMovie": {
+                "tagline": {
+                    "type": "string"
+                },
+                "title": {
+                    "description": "gorm.Model",
+                    "type": "string"
+                },
+                "to": {
                     "type": "string"
                 }
             }

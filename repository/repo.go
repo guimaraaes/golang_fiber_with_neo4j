@@ -1,9 +1,7 @@
 package repository
 
 import (
-	"encoding/json"
 	"fmt"
-	"reflect"
 	"strconv"
 
 	"github.com/guimaraaes/golang_fiber_with_neo4j/database"
@@ -11,122 +9,39 @@ import (
 	"github.com/neo4j/neo4j-go-driver/neo4j"
 )
 
-func TransToString(data interface{}) (res string) {
-	switch v := data.(type) {
-	case float64:
-		res = strconv.FormatFloat(data.(float64), 'f', 6, 64)
-	case float32:
-		res = strconv.FormatFloat(float64(data.(float32)), 'f', 6, 32)
-	case int:
-		res = strconv.FormatInt(int64(data.(int)), 10)
-	case int64:
-		res = strconv.FormatInt(data.(int64), 10)
-	case uint:
-		res = strconv.FormatUint(uint64(data.(uint)), 10)
-	case uint64:
-		res = strconv.FormatUint(data.(uint64), 10)
-	case uint32:
-		res = strconv.FormatUint(uint64(data.(uint32)), 10)
-	case json.Number:
-		res = data.(json.Number).String()
-	case string:
-		res = "'" + data.(string) + "'"
-	case []byte:
-		res = string(v)
-	case bool:
-		res = string(strconv.FormatBool(data.(bool)))
-	default:
-		res = ""
-	}
-	return
-}
-
-func FindR(model interface{}, info map[string]interface{}) ([]string, string) {
+func CreateWithRElR(nodeSource interface{}, relation interface{}, nodeTarget interface{}) ([]string, string) {
 	var c []string
 	var C string
-	node := reflect.TypeOf(model).Elem().Name()
-	excep := ""
-	var query string
-	var m map[string]interface{} = nil
-	properties := ""
-	i := 0
-	for pro, value := range info {
-		i = i + 1
-		properties = properties + pro + ": " + TransToString(value)
-		if i <= len(info)-1 {
-			properties = properties + ", "
+	var excep string
 
-		}
-	}
+	nSource, properSource := getProperties(nodeSource)
+	rel, properRel := getRelationshipConfig(relation)
+	nTarget, properTarget := getProperties(nodeTarget)
 
-	// fmt.Println(properties)
-	_, err := database.Neo4jDS.Session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
-		if info == nil {
-			query = "MATCH (m) WHERE labels(m) = [$node] CALL apoc.path.subgraphAll(m, {maxLevel:0}) YIELD nodes WITH [node in nodes | node {.*, label:labels(node)[0]}] as nodes RETURN apoc.convert.toJson(nodes[0])"
-			m = map[string]interface{}{"node": node}
-		} else {
-			query = "MATCH (m {" + properties + "  }) WHERE labels(m) = [$node] CALL apoc.path.subgraphAll(m, {maxLevel:0}) YIELD nodes WITH [node in nodes | node {.*, label:labels(node)[0]}] as nodes RETURN apoc.convert.toJson(nodes[0])"
-			m = map[string]interface{}{"node": node}
-		}
-		result, err := transaction.Run(query, m)
-		if err != nil {
-			return nil, err
-		}
-		i := 0
-		for result.Next() {
-			C = result.Record().GetByIndex(0).(string)
-			i = i + 1
-			c = append(c, C)
-		}
-		if c == nil {
-			excep = "não encontrado"
-		}
-		return nil, result.Err()
-	})
-	if err != nil {
-		return c, "error"
-	}
-	return c, excep
-}
+	// fmt.Println(nSource)
+	// fmt.Println(properSource)
+	// fmt.Println(rel)
+	// fmt.Println(properRel)
+	// fmt.Println(nTarget)
+	// fmt.Println(properTarget)
 
-func CreateR(model interface{}, info map[string]interface{}) ([]string, string) {
-	var c []string
-	var C string
-	// node := reflect.TypeOf(model).Elem().Name()
-	excep := ""
-
-	properties := ""
-	i := 0
-	for pro, value := range info {
-		i = i + 1
-		properties = properties + pro + ": " + TransToString(value)
-		if i <= len(info)-1 {
-			properties = properties + ", "
-
-		}
-	}
-	fmt.Println(properties)
 	_, err := database.Neo4jDS.Session.WriteTransaction(func(transaction neo4j.Transaction) (interface{}, error) {
 		result, err := transaction.Run(
-			"MATCH (mExist {"+properties+"}) WHERE labels(mExist) = [$n] RETURN apoc.convert.toJson(mExist.title) as t",
-			map[string]interface{}{"n": "M"})
+			"MERGE (t {"+properTarget+"}) WITH t "+
+				"MERGE (s{"+properSource+"}) WITH s, t "+
+				"CALL apoc.create.addLabels(t, [$node2])YIELD node "+
+				"CALL apoc.create.addLabels(s, [$node1]) YIELD node AS N "+
+				"WITH s, t, N "+
+				"CALL apoc.create.relationship(s, $rel,{"+properRel+"}, t)YIELD rel "+
+				"WITH s, t, N "+
+				"CALL apoc.path.subgraphAll(N, {maxLevel:0}) YIELD nodes WITH [N in nodes | N {.*, label:labels(N)[0]}] as nodes "+
+				"RETURN apoc.convert.toJson(nodes[0]) ",
+			map[string]interface{}{"node1": nSource, "node2": nTarget, "rel": rel})
 		if err != nil {
 			return nil, err
 		}
-		if result.Next() {
-			excep = "já existe"
-			return nil, nil
-		}
-		result, err = transaction.Run(
-			"MERGE (m {"+properties+"}) CALL apoc.path.subgraphAll(m, {maxLevel:0}) YIELD nodes WITH [node in nodes | node {.*, label:labels(node)[0]}] as nodes RETURN apoc.convert.toJson(nodes[0])",
-			nil)
-		if err != nil {
-			return nil, err
-		}
-		i := 0
 		for result.Next() {
 			C = result.Record().GetByIndex(0).(string)
-			i = i + 1
 			c = append(c, C)
 		}
 		if c == nil {
@@ -136,11 +51,9 @@ func CreateR(model interface{}, info map[string]interface{}) ([]string, string) 
 	})
 	if err != nil {
 		fmt.Println(err)
-		return c, "error"
-
+		return c, err.Error()
 	}
 	return c, excep
-
 }
 
 func SaveR(title string, released string, m *model.Movie) (model.Movie, string) {

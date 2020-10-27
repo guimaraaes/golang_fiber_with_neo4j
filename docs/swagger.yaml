@@ -12,17 +12,36 @@ definitions:
     type: object
   model.Person:
     properties:
-      acted:
-        type: boolean
       born:
         type: integer
-      direct:
-        type: boolean
       name:
         type: string
-      releaseMovie:
+    type: object
+  model.PersonRelationship:
+    properties:
+      ano:
+        type: string
+      born:
         type: integer
-      titleMovie:
+      from:
+        type: string
+      mes:
+        type: string
+      name:
+        type: string
+      relationship_type:
+        description: |-
+          ACTED    bool   `json:"acted_relationship"`
+          DIRECTED bool   `json:"direct_relationship"`
+        type: string
+      released:
+        type: integer
+      tagline:
+        type: string
+      title:
+        description: gorm.Model
+        type: string
+      to:
         type: string
     type: object
 host: localhost:3000
@@ -159,11 +178,6 @@ paths:
   /person/:
     post:
       parameters:
-      - description: Person ID
-        in: path
-        name: id
-        required: true
-        type: integer
       - description: Person model
         in: body
         name: person
@@ -244,6 +258,25 @@ paths:
         "400":
           description: Bad Request
       summary: Get person by id
+      tags:
+      - person
+  /person_with_relationship:
+    post:
+      parameters:
+      - description: Relationship model
+        in: body
+        name: relationship
+        required: true
+        schema:
+          $ref: '#/definitions/model.PersonRelationship'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      summary: Create a person with relationship
       tags:
       - person
 swagger: "2.0"

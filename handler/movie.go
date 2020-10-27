@@ -17,7 +17,7 @@ import (
 // @Failure 400 "Bad Request"
 // @Router /movie [get]
 func GetMovie(c *fiber.Ctx) error {
-	var movie []model.Movie
+	var movie model.Movie
 	m, err := repository.FindR(movie, nil)
 	if err != "" {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"status": err})
@@ -49,7 +49,7 @@ func GetMovieId(c *fiber.Ctx) error {
 	title, _ := url.QueryUnescape(n)
 	released, _ := strconv.ParseInt(c.Params("released"), 10, 64)
 
-	var movie []model.Movie
+	var movie model.Movie
 	m, err := repository.FindR(movie, map[string]interface{}{"title": title, "released": released})
 	if err != "" {
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": err})
@@ -78,12 +78,11 @@ func GetMovieId(c *fiber.Ctx) error {
 // @Failure 400 "Bad Request"
 // @Router /movie/ [post]
 func PostMovie(c *fiber.Ctx) error {
-	movie := new(model.Movie)
-	// var movie model.Movie
-	if err := c.BodyParser(movie); err != nil {
+	var movie model.Movie
+	if err := c.BodyParser(&movie); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "error", "message": "Review your input", "data": err})
 	}
-	m, err := repository.CreateR(movie, map[string]interface{}{"title": "title", "released": "released"})
+	m, err := repository.CreateR(movie)
 	if err != "" {
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": err, "movie": m})
 	}
