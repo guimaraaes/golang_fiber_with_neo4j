@@ -10,10 +10,9 @@ import (
 func Routes(app *fiber.App) {
 	//cors
 	app.Use(cors.New())
-
 	//swagger
-	// app.Use("/swagger", fiberSwagger.Handler)
-	app.Use("/swagger", swagger.Handler) // default
+	app.Use("/swagger", swagger.Handler)
+
 	//hello world
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, World 👋!")
@@ -31,6 +30,6 @@ func Routes(app *fiber.App) {
 	app.Get("/person/:name/:born", handler.GetPersonId)
 	app.Post("/person", handler.PostPerson)
 	app.Post("/person_with_relationship", handler.PostPersonWithRelationship)
-	app.Put("/person/:id", handler.PutPerson)
-	app.Delete("/person/:id", handler.DeletePerson)
+	app.Put("/person/:name/:born", handler.PutPerson)
+	app.Delete("/person/:name/:born", handler.DeletePerson)
 }

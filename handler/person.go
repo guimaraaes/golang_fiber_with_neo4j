@@ -94,24 +94,46 @@ func PostPersonWithRelationship(c *fiber.Ctx) error {
 // @Tags person
 // @Summary Edit a person
 // @Produce  json
-// @Param id path int true "Person ID"
+// @Param name path string true "name Person"
+// @Param born path int true "year person born"
 // @Param person body model.Person true "Person model"
 // @Success 200 "OK"
 // @Failure 400 "Bad Request"
-// @Router /person/{id} [put]
+// @Router /person/{name}/{born} [put]
 func PutPerson(c *fiber.Ctx) error {
-	return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"status": "success"})
+	n := c.Params("name")
+	name, _ := url.QueryUnescape(n)
+	born, _ := strconv.ParseInt(c.Params("born"), 10, 64)
+	var person model.Person
+
+	if err := c.BodyParser(&person); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "error", "message": "Review your input", "data": err})
+	}
+	p, err := repository.SaveR(person, map[string]interface{}{"name": name, "born": born})
+	if err != "" {
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": err})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": p})
 }
 
 // DeletePerson godoc
 // @Tags person
 // @Summary Delete a person
 // @Produce  json
-// @Param id path int true "Person ID"
+// @Param name path string true "name Person"
+// @Param born path int true "year person born"
 // @Success 200 "OK"
 // @Failure 400 "Bad Request"
 // @Failure 401 "Unauthorized"
-// @Router /person/{id} [delete]
+// @Router /person/{name}/{born} [delete]
 func DeletePerson(c *fiber.Ctx) error {
-	return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"status": "success"})
+	n := c.Params("name")
+	name, _ := url.QueryUnescape(n)
+	born, _ := strconv.ParseInt(c.Params("born"), 10, 64)
+	var person model.Person
+	p, err := repository.DeleteR(person, map[string]interface{}{"name": name, "born": born})
+	if err != "não encontrado" {
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": err})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": p})
 }

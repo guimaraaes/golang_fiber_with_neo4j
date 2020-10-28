@@ -243,7 +243,40 @@ var doc = `{
                 }
             }
         },
-        "/person/{id}": {
+        "/person/{name}/{born}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "person"
+                ],
+                "summary": "Get person by id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "name Person",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "year person born",
+                        "name": "born",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            },
             "put": {
                 "produces": [
                     "application/json"
@@ -254,9 +287,16 @@ var doc = `{
                 "summary": "Edit a person",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "name Person",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
                         "type": "integer",
-                        "description": "Person ID",
-                        "name": "id",
+                        "description": "year person born",
+                        "name": "born",
                         "in": "path",
                         "required": true
                     },
@@ -289,37 +329,6 @@ var doc = `{
                 "summary": "Delete a person",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "Person ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
-                    }
-                }
-            }
-        },
-        "/person/{name}/{born}": {
-            "get": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "person"
-                ],
-                "summary": "Get person by id",
-                "parameters": [
-                    {
                         "type": "string",
                         "description": "name Person",
                         "name": "name",
@@ -340,6 +349,9 @@ var doc = `{
                     },
                     "400": {
                         "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
                     }
                 }
             }
@@ -406,13 +418,11 @@ var doc = `{
             "type": "object",
             "properties": {
                 "ano": {
+                    "description": "From         string ` + "`" + `json:\"from\"` + "`" + `\nTo           string ` + "`" + `json:\"to\"",
                     "type": "string"
                 },
                 "born": {
                     "type": "integer"
-                },
-                "from": {
-                    "type": "string"
                 },
                 "mes": {
                     "type": "string"
@@ -421,7 +431,6 @@ var doc = `{
                     "type": "string"
                 },
                 "relationship_type": {
-                    "description": "ACTED    bool   ` + "`" + `json:\"acted_relationship\"` + "`" + `\nDIRECTED bool   ` + "`" + `json:\"direct_relationship\"` + "`" + `",
                     "type": "string"
                 },
                 "released": {
@@ -432,9 +441,6 @@ var doc = `{
                 },
                 "title": {
                     "description": "gorm.Model",
-                    "type": "string"
-                },
-                "to": {
                     "type": "string"
                 }
             }

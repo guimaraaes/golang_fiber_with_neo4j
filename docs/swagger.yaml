@@ -20,19 +20,17 @@ definitions:
   model.PersonRelationship:
     properties:
       ano:
+        description: |-
+          From         string `json:"from"`
+          To           string `json:"to"
         type: string
       born:
         type: integer
-      from:
-        type: string
       mes:
         type: string
       name:
         type: string
       relationship_type:
-        description: |-
-          ACTED    bool   `json:"acted_relationship"`
-          DIRECTED bool   `json:"direct_relationship"`
         type: string
       released:
         type: integer
@@ -40,8 +38,6 @@ definitions:
         type: string
       title:
         description: gorm.Model
-        type: string
-      to:
         type: string
     type: object
 host: localhost:3000
@@ -194,12 +190,17 @@ paths:
       summary: Create a person
       tags:
       - person
-  /person/{id}:
+  /person/{name}/{born}:
     delete:
       parameters:
-      - description: Person ID
+      - description: name Person
         in: path
-        name: id
+        name: name
+        required: true
+        type: string
+      - description: year person born
+        in: path
+        name: born
         required: true
         type: integer
       produces:
@@ -214,30 +215,6 @@ paths:
       summary: Delete a person
       tags:
       - person
-    put:
-      parameters:
-      - description: Person ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Person model
-        in: body
-        name: person
-        required: true
-        schema:
-          $ref: '#/definitions/model.Person'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-        "400":
-          description: Bad Request
-      summary: Edit a person
-      tags:
-      - person
-  /person/{name}/{born}:
     get:
       parameters:
       - description: name Person
@@ -258,6 +235,34 @@ paths:
         "400":
           description: Bad Request
       summary: Get person by id
+      tags:
+      - person
+    put:
+      parameters:
+      - description: name Person
+        in: path
+        name: name
+        required: true
+        type: string
+      - description: year person born
+        in: path
+        name: born
+        required: true
+        type: integer
+      - description: Person model
+        in: body
+        name: person
+        required: true
+        schema:
+          $ref: '#/definitions/model.Person'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      summary: Edit a person
       tags:
       - person
   /person_with_relationship:

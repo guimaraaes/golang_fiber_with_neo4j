@@ -102,14 +102,15 @@ func PostMovie(c *fiber.Ctx) error {
 func PutMovie(c *fiber.Ctx) error {
 	t := c.Params("title")
 	title, _ := url.QueryUnescape(t)
-	released := string(c.Params("released"))
-	movie := new(model.Movie)
+	released, _ := strconv.ParseInt(c.Params("released"), 10, 64)
+	var movie model.Movie
+
 	if err := c.BodyParser(&movie); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "error", "message": "Review your input", "data": err})
 	}
-	m, err := repository.Save(title, released, movie)
+	m, err := repository.SaveR(movie, map[string]interface{}{"title": title, "released": released})
 	if err != "" {
-		return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": err, "movie": movie})
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": err})
 	}
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": m})
 }
@@ -127,10 +128,11 @@ func PutMovie(c *fiber.Ctx) error {
 func DeleteMovie(c *fiber.Ctx) error {
 	t := c.Params("title")
 	title, _ := url.QueryUnescape(t)
-	released := string(c.Params("released"))
-	err := repository.Delete(title, released)
-	if err != "" {
+	released, _ := strconv.ParseInt(c.Params("released"), 10, 64)
+	var movie model.Movie
+	m, err := repository.DeleteR(movie, map[string]interface{}{"title": title, "released": released})
+	if err != "não encontrado" {
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": err})
 	}
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "movie excluído"})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": m})
 }

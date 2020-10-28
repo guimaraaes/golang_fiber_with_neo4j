@@ -7,9 +7,9 @@ import (
 )
 
 var neo4j_Config = config.Neo4j{
-	URI:      "bolt://3.89.160.163:33302",
+	URI:      "bolt://35.153.83.239:32819",
 	Username: "neo4j",
-	Password: "misalignment-sediments-updates",
+	Password: "default-cones-diseases",
 	// URI:      "bolt://localhost:7687",
 	// Username: "neo4j",
 	// Password: "neo4j.",
