@@ -32,4 +32,6 @@ func Routes(app *fiber.App) {
 	app.Post("/person_with_relationship", handler.PostPersonWithRelationship)
 	app.Put("/person/:name/:born", handler.PutPerson)
 	app.Delete("/person/:name/:born", handler.DeletePerson)
+
+	//Cities
 }
