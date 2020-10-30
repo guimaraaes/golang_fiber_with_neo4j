@@ -32,6 +32,176 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/GETperson_with_relationship": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "person"
+                ],
+                "summary": "Get person by relationship",
+                "parameters": [
+                    {
+                        "description": "name Person",
+                        "name": "pKp",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.PersonKNOWSPerson"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/algo_centrality/{node}/{relationship}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "algorithms"
+                ],
+                "summary": "Show centrality nodes",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Node type",
+                        "name": "node",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Relationship projection",
+                        "name": "relationship",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/algo_community/{node}/{relationship}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "algorithms"
+                ],
+                "summary": "Show comunity nodes",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Node type",
+                        "name": "node",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Relationship projection",
+                        "name": "relationship",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/algo_pagerank/{node}/{relationship}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "algorithms"
+                ],
+                "summary": "Show page rank nodes",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Node type",
+                        "name": "node",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Relationship projection",
+                        "name": "relationship",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/algo_path/{node}/{relationship}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "algorithms"
+                ],
+                "summary": "Show path nodes",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Node type",
+                        "name": "node",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Relationship projection",
+                        "name": "relationship",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
         "/movie": {
             "get": {
                 "produces": [
@@ -368,11 +538,11 @@ var doc = `{
                 "parameters": [
                     {
                         "description": "Relationship model",
-                        "name": "relationship",
+                        "name": "pKp",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.PersonRelationship"
+                            "$ref": "#/definitions/model.PersonKNOWSPerson"
                         }
                     }
                 ],
@@ -414,34 +584,21 @@ var doc = `{
                 }
             }
         },
-        "model.PersonRelationship": {
+        "model.PersonKNOWSPerson": {
             "type": "object",
             "properties": {
                 "ano": {
-                    "description": "From         string ` + "`" + `json:\"from\"` + "`" + `\nTo           string ` + "`" + `json:\"to\"",
+                    "description": "RelationType string ` + "`" + `json:\"relationship_type\"` + "`" + `",
                     "type": "string"
-                },
-                "born": {
-                    "type": "integer"
                 },
                 "mes": {
                     "type": "string"
                 },
-                "name": {
-                    "type": "string"
+                "p1": {
+                    "$ref": "#/definitions/model.Person"
                 },
-                "relationship_type": {
-                    "type": "string"
-                },
-                "released": {
-                    "type": "integer"
-                },
-                "tagline": {
-                    "type": "string"
-                },
-                "title": {
-                    "description": "gorm.Model",
-                    "type": "string"
+                "p2": {
+                    "$ref": "#/definitions/model.Person"
                 }
             }
         }

@@ -49,6 +49,26 @@ func GetPersonId(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(p)
 }
 
+// GetPersonRel godoc
+// @Tags person
+// @Summary Get person by relationship
+// @Produce json
+// @Param pKp body model.PersonKNOWSPerson true "name Person"
+// @Success 200 "OK"
+// @Failure 400 "Bad Request"
+// @Router /GETperson_with_relationship [post]
+func GetPersonRel(c *fiber.Ctx) error {
+	var person model.PersonKNOWSPerson
+	if err := c.BodyParser(&person); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "error", "message": "Review your input", "data": err})
+	}
+	p, err := repository.FindWithRelR(person.P1, person.KNOWS, person.P2)
+	if err != "" {
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": err})
+	}
+	return c.Status(fiber.StatusOK).JSON(p)
+}
+
 // PostPerson godoc
 // @Tags person
 // @Summary Create a person
@@ -73,17 +93,17 @@ func PostPerson(c *fiber.Ctx) error {
 // @Tags person
 // @Summary Create a person with relationship
 // @Produce  json
-// @Param relationship body model.PersonRelationship true "Relationship model"
+// @Param pKp body model.PersonKNOWSPerson true "Relationship model"
 // @Success 200 "OK"
 // @Failure 400 "Bad Request"
 // @Router /person_with_relationship [post]
 func PostPersonWithRelationship(c *fiber.Ctx) error {
 
-	var person model.PersonRelationship
+	var person model.PersonKNOWSPerson
 	if err := c.BodyParser(&person); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "error", "message": "Review your input", "data": err})
 	}
-	p, err := repository.CreateWithRElR(person.Person, person.Relationship, person.Movie)
+	p, err := repository.CreateWithRElR(person.P1, person.KNOWS, person.P2)
 	if err != "" {
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": err, "movie": p})
 	}

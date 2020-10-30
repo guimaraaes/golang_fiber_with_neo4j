@@ -17,28 +17,17 @@ definitions:
       name:
         type: string
     type: object
-  model.PersonRelationship:
+  model.PersonKNOWSPerson:
     properties:
       ano:
-        description: |-
-          From         string `json:"from"`
-          To           string `json:"to"
+        description: RelationType string `json:"relationship_type"`
         type: string
-      born:
-        type: integer
       mes:
         type: string
-      name:
-        type: string
-      relationship_type:
-        type: string
-      released:
-        type: integer
-      tagline:
-        type: string
-      title:
-        description: gorm.Model
-        type: string
+      p1:
+        $ref: '#/definitions/model.Person'
+      p2:
+        $ref: '#/definitions/model.Person'
     type: object
 host: localhost:3000
 info:
@@ -53,6 +42,117 @@ info:
   title: fiber aplication with neo4j
   version: "1.0"
 paths:
+  /GETperson_with_relationship:
+    post:
+      parameters:
+      - description: name Person
+        in: body
+        name: pKp
+        required: true
+        schema:
+          $ref: '#/definitions/model.PersonKNOWSPerson'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      summary: Get person by relationship
+      tags:
+      - person
+  /algo_centrality/{node}/{relationship}:
+    get:
+      parameters:
+      - description: Node type
+        in: path
+        name: node
+        required: true
+        type: string
+      - description: Relationship projection
+        in: path
+        name: relationship
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      summary: Show centrality nodes
+      tags:
+      - algorithms
+  /algo_community/{node}/{relationship}:
+    get:
+      parameters:
+      - description: Node type
+        in: path
+        name: node
+        required: true
+        type: string
+      - description: Relationship projection
+        in: path
+        name: relationship
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      summary: Show comunity nodes
+      tags:
+      - algorithms
+  /algo_pagerank/{node}/{relationship}:
+    get:
+      parameters:
+      - description: Node type
+        in: path
+        name: node
+        required: true
+        type: string
+      - description: Relationship projection
+        in: path
+        name: relationship
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      summary: Show page rank nodes
+      tags:
+      - algorithms
+  /algo_path/{node}/{relationship}:
+    get:
+      parameters:
+      - description: Node type
+        in: path
+        name: node
+        required: true
+        type: string
+      - description: Relationship projection
+        in: path
+        name: relationship
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      summary: Show path nodes
+      tags:
+      - algorithms
   /movie:
     get:
       produces:
@@ -270,10 +370,10 @@ paths:
       parameters:
       - description: Relationship model
         in: body
-        name: relationship
+        name: pKp
         required: true
         schema:
-          $ref: '#/definitions/model.PersonRelationship'
+          $ref: '#/definitions/model.PersonKNOWSPerson'
       produces:
       - application/json
       responses:

@@ -5,14 +5,14 @@ type Person struct {
 	Born int    `json:"born"`
 }
 
-type Relationship struct {
-	RelationType string `json:"relationship_type"`
-	Ano          string `json:"ano"`
-	Mes          string `json:"mes"`
+type KNOWS struct {
+	// RelationType string `json:"relationship_type"`
+	Ano string `json:"ano"`
+	Mes string `json:"mes"`
 }
 
-type PersonRelationship struct {
-	Movie
-	Person
-	Relationship
+type PersonKNOWSPerson struct {
+	P1 Person
+	KNOWS
+	P2 Person
 }

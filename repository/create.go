@@ -16,8 +16,6 @@ func CreateR(model interface{}) ([]string, string) {
 		"YIELD nodes WITH [node in nodes | node {.*, label:labels(node)[0]}] as nodes " +
 		"RETURN apoc.convert.toJson(nodes[0])"
 	m := map[string]interface{}{"node": nodeCreate}
-
 	c, err := utils.QueryCall(query, m)
-
 	return c, err
 }

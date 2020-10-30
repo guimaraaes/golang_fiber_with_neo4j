@@ -8,7 +8,8 @@ func CreateWithRElR(modelSource interface{}, relation interface{}, modelTarget i
 
 	nSource, properSource := utils.Label_Properties_Node(modelSource, utils.Model_Properties_To_Params(modelSource))
 	nTarget, properTarget := utils.Label_Properties_Node(modelTarget, utils.Model_Properties_To_Params(modelTarget))
-	rel, properRel := utils.Label_Properties_Relationship(relation)
+	// rel, properRel := utils.Label_Properties_Relationship(relation)
+	rel, properRel := utils.Label_Properties_Node(relation, utils.Model_Properties_To_Params(relation))
 
 	// fmt.Println(nSource)
 	// fmt.Println(properSource)
