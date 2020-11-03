@@ -7,7 +7,7 @@ require (
 	github.com/andybalholm/brotli v1.0.1 // indirect
 	github.com/arsmn/fiber-swagger/v2 v2.0.0
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
-	github.com/go-openapi/spec v0.19.11 // indirect
+	github.com/go-openapi/spec v0.19.12 // indirect
 	github.com/go-openapi/swag v0.19.11 // indirect
 	github.com/gofiber/fiber v1.14.6
 	github.com/gofiber/fiber/v2 v2.1.1
@@ -16,7 +16,9 @@ require (
 	github.com/neo4j/neo4j-go-driver v1.8.3
 	github.com/qinains/fastergoding v0.0.2
 	github.com/swaggo/swag v1.6.9
-	golang.org/x/net v0.0.0-20201026091529-146b70c837a4 // indirect
-	golang.org/x/tools v0.0.0-20201023174141-c8cfbd0f21e6 // indirect
+	github.com/urfave/cli/v2 v2.3.0 // indirect
+	golang.org/x/net v0.0.0-20201031054903-ff519b6c9102 // indirect
+	golang.org/x/text v0.3.4 // indirect
+	golang.org/x/tools v0.0.0-20201102212025-f46e4245211d // indirect
 	gorm.io/gorm v1.20.5
 )

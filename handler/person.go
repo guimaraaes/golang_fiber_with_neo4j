@@ -23,7 +23,6 @@ func GetPerson(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"status": err})
 	}
 	return c.Status(fiber.StatusOK).JSON(p)
-
 }
 
 // GetPersonId godoc
@@ -41,7 +40,6 @@ func GetPersonId(c *fiber.Ctx) error {
 	born, _ := strconv.ParseInt(c.Params("born"), 10, 64)
 
 	var person model.Person
-	// , map[string]interface{}{"name": name, "born": born}
 	p, err := repository.FindR(person, map[string]interface{}{"name": name, "born": born})
 	if err != "" {
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": err})
@@ -56,7 +54,7 @@ func GetPersonId(c *fiber.Ctx) error {
 // @Param pKp body model.PersonKNOWSPerson true "name Person"
 // @Success 200 "OK"
 // @Failure 400 "Bad Request"
-// @Router /GETperson_with_relationship [post]
+// @Router /person/GETwith_relationship [post]
 func GetPersonRel(c *fiber.Ctx) error {
 	var person model.PersonKNOWSPerson
 	if err := c.BodyParser(&person); err != nil {
@@ -96,9 +94,8 @@ func PostPerson(c *fiber.Ctx) error {
 // @Param pKp body model.PersonKNOWSPerson true "Relationship model"
 // @Success 200 "OK"
 // @Failure 400 "Bad Request"
-// @Router /person_with_relationship [post]
+// @Router /person/with_relationship [post]
 func PostPersonWithRelationship(c *fiber.Ctx) error {
-
 	var person model.PersonKNOWSPerson
 	if err := c.BodyParser(&person); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "error", "message": "Review your input", "data": err})

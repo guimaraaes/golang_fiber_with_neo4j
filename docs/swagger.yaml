@@ -42,25 +42,6 @@ info:
   title: fiber aplication with neo4j
   version: "1.0"
 paths:
-  /GETperson_with_relationship:
-    post:
-      parameters:
-      - description: name Person
-        in: body
-        name: pKp
-        required: true
-        schema:
-          $ref: '#/definitions/model.PersonKNOWSPerson'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-        "400":
-          description: Bad Request
-      summary: Get person by relationship
-      tags:
-      - person
   /algo_centrality/{node}/{relationship}:
     get:
       parameters:
@@ -365,7 +346,26 @@ paths:
       summary: Edit a person
       tags:
       - person
-  /person_with_relationship:
+  /person/GETwith_relationship:
+    post:
+      parameters:
+      - description: name Person
+        in: body
+        name: pKp
+        required: true
+        schema:
+          $ref: '#/definitions/model.PersonKNOWSPerson'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+      summary: Get person by relationship
+      tags:
+      - person
+  /person/with_relationship:
     post:
       parameters:
       - description: Relationship model

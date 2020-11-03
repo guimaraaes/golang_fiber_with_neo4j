@@ -7,11 +7,9 @@ func SaveR(model interface{}, info map[string]interface{}) ([]string, string) {
 	if c == nil {
 		return nil, "não existe"
 	}
-	node, propertiesParams := utils.Label_Properties_Node(model, info)
-	_, propertiesSet := utils.Label_Properties_Node(model, utils.Model_Properties_To_Params(model))
-	// fmt.Println(node)
-	// fmt.Println(propertiesParams)
-	// fmt.Println(propertiesSet)
+	node, propertiesSet := utils.Label_and_Properties(model)
+	propertiesParams := utils.Properties(info)
+
 	query := "MATCH (m {" + propertiesParams + "  }) WHERE $node in labels(m) " +
 		"SET m += { " + propertiesSet + " } WITH m " +
 		"CALL apoc.path.subgraphAll(m, {maxLevel:0}) " +

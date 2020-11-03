@@ -6,17 +6,10 @@ import (
 
 func CreateWithRElR(modelSource interface{}, relation interface{}, modelTarget interface{}) ([]string, string) {
 
-	nSource, properSource := utils.Label_Properties_Node(modelSource, utils.Model_Properties_To_Params(modelSource))
-	nTarget, properTarget := utils.Label_Properties_Node(modelTarget, utils.Model_Properties_To_Params(modelTarget))
-	// rel, properRel := utils.Label_Properties_Relationship(relation)
-	rel, properRel := utils.Label_Properties_Node(relation, utils.Model_Properties_To_Params(relation))
+	nSource, properSource := utils.Label_and_Properties(modelSource)
+	nTarget, properTarget := utils.Label_and_Properties(modelTarget)
+	rel, properRel := utils.Label_and_Properties(relation)
 
-	// fmt.Println(nSource)
-	// fmt.Println(properSource)
-	// fmt.Println(rel)
-	// fmt.Println(properRel)
-	// fmt.Println(nTarget)
-	// fmt.Println(properTarget)
 	query := "MERGE (t {" + properTarget + "}) WITH t " +
 		"MERGE (s{" + properSource + "}) WITH s, t " +
 		"CALL apoc.create.addLabels(t, [$node2])YIELD node " +

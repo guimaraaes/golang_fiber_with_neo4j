@@ -25,16 +25,6 @@ func GetMovie(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(m)
 }
 
-// func GetMovie(c *fiber.Ctx) error {
-// 	// movies := make([]model.Movie, 10)
-// 	var movie []model.Movie
-// 	movie, err := repository.Find()
-// 	if err != "" {
-// 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"status": err})
-// 	}
-// 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": movie})
-// }
-
 // GetMovieId godoc
 // @Tags movie
 // @Summary Get movie by id
@@ -56,18 +46,6 @@ func GetMovieId(c *fiber.Ctx) error {
 	}
 	return c.Status(fiber.StatusOK).JSON(m)
 }
-
-// func GetMovieId(c *fiber.Ctx) error {
-// 	n := c.Params("title")
-// 	title, _ := url.QueryUnescape(n)
-// 	// released := string(c.Params("released"))
-// 	var movie []model.Movie
-// 	movie, err := repository.Find(title, "The Matrix")
-// 	if err != "" {
-// 		return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": err})
-// 	}
-// 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": movie})
-// }
 
 // PostMovie godoc
 // @Tags movie

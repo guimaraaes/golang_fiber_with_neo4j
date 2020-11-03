@@ -3,9 +3,13 @@ package repository
 import "github.com/guimaraaes/golang_fiber_with_neo4j/repository/utils"
 
 func FindR(model interface{}, info map[string]interface{}) ([]string, string) {
-	node, properties := utils.Label_Properties_Node(model, info)
-	// fmt.Println(node)
-	// fmt.Println(properties)
+
+	node, _ := utils.Label_and_Properties(model)
+	properties := utils.Properties(info)
+	if info == nil {
+		node, properties = utils.Label_and_Properties(model)
+	}
+
 	var query string
 	var m map[string]interface{} = nil
 	if info == nil {

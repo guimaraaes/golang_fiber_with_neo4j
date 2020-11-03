@@ -1,8 +1,6 @@
 package utils
 
 import (
-	"fmt"
-
 	"github.com/guimaraaes/golang_fiber_with_neo4j/database"
 	"github.com/neo4j/neo4j-go-driver/neo4j"
 )
@@ -20,8 +18,8 @@ func QueryCall(query string, m map[string]interface{}) ([]string, string) {
 		for result.Next() {
 			C = result.Record().GetByIndex(0).(string)
 			c = append(c, C)
-			fmt.Println(C)
 		}
+
 		if c == nil {
 			excep = "não encontrado"
 		}

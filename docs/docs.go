@@ -32,36 +32,6 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/GETperson_with_relationship": {
-            "post": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "person"
-                ],
-                "summary": "Get person by relationship",
-                "parameters": [
-                    {
-                        "description": "name Person",
-                        "name": "pKp",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.PersonKNOWSPerson"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    }
-                }
-            }
-        },
         "/algo_centrality/{node}/{relationship}": {
             "get": {
                 "produces": [
@@ -413,6 +383,66 @@ var doc = `{
                 }
             }
         },
+        "/person/GETwith_relationship": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "person"
+                ],
+                "summary": "Get person by relationship",
+                "parameters": [
+                    {
+                        "description": "name Person",
+                        "name": "pKp",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.PersonKNOWSPerson"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
+        "/person/with_relationship": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "person"
+                ],
+                "summary": "Create a person with relationship",
+                "parameters": [
+                    {
+                        "description": "Relationship model",
+                        "name": "pKp",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.PersonKNOWSPerson"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    }
+                }
+            }
+        },
         "/person/{name}/{born}": {
             "get": {
                 "produces": [
@@ -522,36 +552,6 @@ var doc = `{
                     },
                     "401": {
                         "description": "Unauthorized"
-                    }
-                }
-            }
-        },
-        "/person_with_relationship": {
-            "post": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "person"
-                ],
-                "summary": "Create a person with relationship",
-                "parameters": [
-                    {
-                        "description": "Relationship model",
-                        "name": "pKp",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/model.PersonKNOWSPerson"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "400": {
-                        "description": "Bad Request"
                     }
                 }
             }
