@@ -22,6 +22,6 @@ docker-compose up
 
 ## Descrição da modelagem
 
-Nesta API a modelagem foi feita definindo uma entidade Person, o tipo de relacionamento KNOW e um modelo genérico de como relacionar as entidades (Person-KNOWS->Person). Pelo diagrama é possível visualizar essa modelagem
+Nesta API a modelagem foi feita definindo variáveis do tipo struct no package model. Por exemplo, nesta aplicação há uma entidade Person, um relacionamento KNOW e um modelo genérico de como relacionar as entidades (Person-KNOWS->Person). Pelo diagrama é possível visualizar essa modelagem,
 
 ![img](https://raw.githubusercontent.com/guimaraaes/golang_fiber_with_neo4j/master/arrow-schema/arrows.svg)
